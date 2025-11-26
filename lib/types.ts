@@ -18,6 +18,7 @@ export interface CandidateProfile {
     firstName: string;
     lastName: string;
     photo?: string;
+    email: string;
     phone: string;
     dateOfBirth?: string;
     gender?: string;
