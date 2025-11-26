@@ -32,24 +32,17 @@ export default function NewJobPage() {
         setLoading(true);
 
         try {
-            // Get current user
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                throw new Error('Not authenticated');
-            }
+            if (!user) throw new Error('Not authenticated');
 
-            // Get corporate profile
             const { data: profile } = await supabase
                 .from('corporate_profiles')
                 .select('id, company_name')
                 .eq('user_id', user.id)
                 .single();
 
-            if (!profile) {
-                throw new Error('Corporate profile not found');
-            }
+            if (!profile) throw new Error('Corporate profile not found');
 
-            // Create job
             const { error: jobError } = await supabase
                 .from('jobs')
                 .insert([
@@ -124,26 +117,30 @@ export default function NewJobPage() {
                         />
 
                         <div className="grid grid-cols-2 gap-4">
+                            {/* FIXED SELECT - ADDED options prop */}
                             <Select
                                 label="Work Mode"
                                 value={formData.work_mode}
                                 onChange={(e) => setFormData({ ...formData, work_mode: e.target.value })}
                                 required
-                            >
-                                <option value="on-site">On-Site</option>
-                                <option value="remote">Remote</option>
-                                <option value="hybrid">Hybrid</option>
-                            </Select>
+                                options={[
+                                    { label: "On-Site", value: "on-site" },
+                                    { label: "Remote", value: "remote" },
+                                    { label: "Hybrid", value: "hybrid" },
+                                ]}
+                            />
 
+                            {/* FIXED SELECT - ADDED options prop */}
                             <Select
                                 label="Job Type"
                                 value={formData.job_type}
                                 onChange={(e) => setFormData({ ...formData, job_type: e.target.value })}
                                 required
-                            >
-                                <option value="off-campus">Off-Campus</option>
-                                <option value="on-campus">On-Campus</option>
-                            </Select>
+                                options={[
+                                    { label: "Off-Campus", value: "off-campus" },
+                                    { label: "On-Campus", value: "on-campus" },
+                                ]}
+                            />
                         </div>
 
                         <Input
