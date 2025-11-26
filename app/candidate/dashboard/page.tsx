@@ -26,7 +26,6 @@ export default function CandidateDashboard() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
 
-            // Get candidate profile
             const { data: profileData } = await supabase
                 .from('candidate_profiles')
                 .select('*')
@@ -35,24 +34,22 @@ export default function CandidateDashboard() {
 
             setProfile(profileData);
 
-            // Get applications
             const { data: appsData } = await supabase
                 .from('applications')
                 .select(`
-          *,
-          jobs (
-            id,
-            title,
-            company_name,
-            location
-          )
-        `)
+                    *,
+                    jobs (
+                        id,
+                        title,
+                        company_name,
+                        location
+                    )
+                `)
                 .eq('candidate_id', profileData?.id)
                 .order('created_at', { ascending: false });
 
             setApplications(appsData || []);
 
-            // Get active jobs
             const { data: jobsData } = await supabase
                 .from('jobs')
                 .select('*')
@@ -109,7 +106,6 @@ export default function CandidateDashboard() {
                     value={profile?.resume_score || 75}
                     icon={Award}
                     gradient="from-purple-500 to-pink-600"
-        
                 />
             </div>
 
@@ -117,9 +113,7 @@ export default function CandidateDashboard() {
                 {/* AI Job Suggestions */}
                 <div className="lg:col-span-2 space-y-6">
                     <div>
-                        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
-                            🎯 AI Job Suggestions
-                        </h2>
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">🎯 AI Job Suggestions</h2>
                         <div className="space-y-4">
                             {loading ? (
                                 <Card><p className="text-center py-8 text-slate-600">Loading...</p></Card>
@@ -139,9 +133,7 @@ export default function CandidateDashboard() {
                                     const matchScore = calculateMatchScore(job.required_skills, candidateSkills);
 
                                     return (
-                                       <Card key={job.id}>
-
-
+                                        <Card key={job.id}>
                                             <div className="flex items-start justify-between mb-3">
                                                 <div>
                                                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
@@ -149,6 +141,7 @@ export default function CandidateDashboard() {
                                                     </h3>
                                                     <p className="text-slate-600 dark:text-slate-400">{job.company_name}</p>
                                                 </div>
+
                                                 {matchScore > 0 && (
                                                     <span className="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-full">
                                                         {matchScore}% Match
@@ -200,7 +193,7 @@ export default function CandidateDashboard() {
                             </h2>
                             <div className="space-y-3">
                                 {applications.slice(0, 3).map((app: any) => (
-                                    <Card key={app.id} variant="hover">
+                                    <Card key={app.id}>
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <h3 className="font-semibold text-slate-900 dark:text-white">
