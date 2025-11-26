@@ -109,7 +109,7 @@ export default function CandidateDashboard() {
                     value={profile?.resume_score || 75}
                     icon={Award}
                     gradient="from-purple-500 to-pink-600"
-                    suffix="%"
+        
                 />
             </div>
 
