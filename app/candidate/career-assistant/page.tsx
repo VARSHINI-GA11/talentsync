@@ -5,8 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import {
     Upload, FileText, Award, TrendingUp, AlertCircle,
-    CheckCircle, XCircle, Download, FileCheck, Sparkles,
-    Loader
+    CheckCircle, XCircle, Download, FileCheck, Sparkles, Loader
 } from 'lucide-react';
 import { analyzeResume } from '@/lib/resumeParser';
 
@@ -34,14 +33,18 @@ export default function CareerAssistantPage() {
         const uploadedFile = e.target.files?.[0];
         if (!uploadedFile) return;
 
-        // Validate file type
-        const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+        const validTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain'
+        ];
+
         if (!validTypes.includes(uploadedFile.type) && !uploadedFile.name.match(/\.(pdf|doc|docx|txt)$/i)) {
             setError('Please upload a PDF, DOC, DOCX, or TXT file');
             return;
         }
 
-        // Validate file size (5MB limit)
         if (uploadedFile.size > 5 * 1024 * 1024) {
             setError('File size must be less than 5MB');
             return;
@@ -52,7 +55,6 @@ export default function CareerAssistantPage() {
         setError(null);
 
         try {
-            // Analyze the resume using real parser
             const result = await analyzeResume(uploadedFile);
             setAnalysis(result);
         } catch (err) {
@@ -88,7 +90,6 @@ export default function CareerAssistantPage() {
                 </p>
             </div>
 
-            {/* Upload Section */}
             {!analysis && (
                 <Card>
                     <div className="text-center py-12">
@@ -110,7 +111,7 @@ export default function CareerAssistantPage() {
                         )}
 
                         <div className="max-w-md mx-auto">
-                            <label className="block">
+                            <label className="block cursor-pointer">
                                 <input
                                     type="file"
                                     accept=".pdf,.doc,.docx,.txt"
@@ -118,17 +119,18 @@ export default function CareerAssistantPage() {
                                     disabled={analyzing}
                                     className="hidden"
                                 />
+
                                 <Button
                                     variant="primary"
                                     size="lg"
                                     disabled={analyzing}
                                     icon={analyzing ? Loader : FileText}
-                                    as="span"
                                     className={analyzing ? 'animate-pulse' : ''}
                                 >
                                     {analyzing ? 'Analyzing Resume...' : 'Choose File to Analyze'}
                                 </Button>
                             </label>
+
                             <p className="text-sm text-slate-500 mt-4">
                                 Supported: PDF, DOC, DOCX, TXT (Max 5MB)
                             </p>
@@ -138,14 +140,8 @@ export default function CareerAssistantPage() {
                         </div>
 
                         <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
-                            <p className="text-slate-600 dark:text-slate-400 mb-4">
-                                Don't have a resume yet?
-                            </p>
-                            <Button
-                                variant="outline"
-                                onClick={() => setShowBuilder(true)}
-                                icon={FileCheck}
-                            >
+                            <p className="text-slate-600 dark:text-slate-400 mb-4">Don't have a resume yet?</p>
+                            <Button variant="outline" onClick={() => setShowBuilder(true)} icon={FileCheck}>
                                 Build Resume from Scratch
                             </Button>
                         </div>
@@ -153,18 +149,14 @@ export default function CareerAssistantPage() {
                 </Card>
             )}
 
-            {/* Analysis Results */}
             {analysis && (
                 <>
-                    {/* File Info */}
                     {file && (
                         <Card className="bg-blue-50 dark:bg-blue-900/20">
                             <div className="flex items-center gap-3">
                                 <FileText className="w-6 h-6 text-blue-600" />
                                 <div>
-                                    <p className="font-semibold text-slate-900 dark:text-white">
-                                        Analyzed: {file.name}
-                                    </p>
+                                    <p className="font-semibold text-slate-900 dark:text-white">Analyzed: {file.name}</p>
                                     <p className="text-sm text-slate-600 dark:text-slate-400">
                                         {(file.size / 1024).toFixed(1)} KB • {file.type || 'Document'}
                                     </p>
@@ -173,30 +165,22 @@ export default function CareerAssistantPage() {
                         </Card>
                     )}
 
-                    {/* Overall Score Card */}
                     <Card className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-800 dark:to-slate-700 border-2 border-blue-200 dark:border-blue-800">
                         <div className="text-center py-8">
                             <Award className="w-16 h-16 mx-auto mb-4 text-blue-600" />
-                            <h2 className="text-5xl font-bold text-slate-900 dark:text-white mb-2">
-                                {analysis.score}/100
-                            </h2>
-                            <p className="text-xl text-slate-600 dark:text-slate-400 mb-6">
-                                Overall ATS Score
-                            </p>
+                            <h2 className="text-5xl font-bold text-slate-900 dark:text-white mb-2">{analysis.score}/100</h2>
+                            <p className="text-xl text-slate-600 dark:text-slate-400 mb-6">Overall ATS Score</p>
                             <div className="w-full max-w-md mx-auto bg-slate-200 dark:bg-slate-700 rounded-full h-4">
                                 <div
-                                    className={`bg-gradient-to-r ${getScoreGradient(analysis.score)} h-4 rounded-full transition-all`}
+                                    className={`bg-gradient-to-r ${getScoreGradient(analysis.score)} h-4 rounded-full`}
                                     style={{ width: `${analysis.score}%` }}
                                 />
                             </div>
                         </div>
                     </Card>
 
-                    {/* Score Breakdown */}
                     <Card>
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
-                            Detailed Analysis
-                        </h3>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Detailed Analysis</h3>
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                             {[
                                 { label: 'Completeness', score: analysis.completeness, icon: CheckCircle },
@@ -207,15 +191,12 @@ export default function CareerAssistantPage() {
                                 <div key={item.label} className="p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
                                     <item.icon className={`w-6 h-6 mb-2 ${getScoreColor(item.score)}`} />
                                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">{item.label}</p>
-                                    <p className={`text-2xl font-bold ${getScoreColor(item.score)}`}>
-                                        {item.score}%
-                                    </p>
+                                    <p className={`text-2xl font-bold ${getScoreColor(item.score)}`}>{item.score}%</p>
                                 </div>
                             ))}
                         </div>
                     </Card>
 
-                    {/* Strengths & Improvements */}
                     <div className="grid lg:grid-cols-2 gap-6">
                         <Card>
                             <div className="flex items-center gap-2 mb-4">
@@ -223,10 +204,10 @@ export default function CareerAssistantPage() {
                                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Strengths</h3>
                             </div>
                             <ul className="space-y-2">
-                                {analysis.strengths.map((strength, idx) => (
-                                    <li key={idx} className="flex items-start gap-2">
+                                {analysis.strengths.map((s, i) => (
+                                    <li key={i} className="flex items-start gap-2">
                                         <span className="text-green-600 mt-1">✓</span>
-                                        <span className="text-slate-700 dark:text-slate-300">{strength}</span>
+                                        <span className="text-slate-700 dark:text-slate-300">{s}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -235,26 +216,21 @@ export default function CareerAssistantPage() {
                         <Card>
                             <div className="flex items-center gap-2 mb-4">
                                 <TrendingUp className="w-6 h-6 text-orange-600" />
-                                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                                    Areas to Improve
-                                </h3>
+                                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Areas to Improve</h3>
                             </div>
                             <ul className="space-y-2">
-                                {analysis.improvements.map((improvement, idx) => (
-                                    <li key={idx} className="flex items-start gap-2">
+                                {analysis.improvements.map((imp, i) => (
+                                    <li key={i} className="flex items-start gap-2">
                                         <span className="text-orange-600 mt-1">→</span>
-                                        <span className="text-slate-700 dark:text-slate-300">{improvement}</span>
+                                        <span className="text-slate-700 dark:text-slate-300">{imp}</span>
                                     </li>
                                 ))}
                             </ul>
                         </Card>
                     </div>
 
-                    {/* Keywords Analysis */}
                     <Card>
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
-                            Keywords Analysis
-                        </h3>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Keywords Analysis</h3>
                         <div className="grid lg:grid-cols-2 gap-6">
                             <div>
                                 <h4 className="font-semibold text-green-700 dark:text-green-400 mb-3 flex items-center gap-2">
@@ -263,12 +239,12 @@ export default function CareerAssistantPage() {
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
                                     {analysis.presentKeywords.length > 0 ? (
-                                        analysis.presentKeywords.map((keyword, idx) => (
+                                        analysis.presentKeywords.map((kw, i) => (
                                             <span
-                                                key={idx}
+                                                key={i}
                                                 className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium"
                                             >
-                                                {keyword}
+                                                {kw}
                                             </span>
                                         ))
                                     ) : (
@@ -276,18 +252,19 @@ export default function CareerAssistantPage() {
                                     )}
                                 </div>
                             </div>
+
                             <div>
                                 <h4 className="font-semibold text-red-700 dark:text-red-400 mb-3 flex items-center gap-2">
                                     <XCircle className="w-5 h-5" />
                                     Consider Adding ({analysis.missingKeywords.length})
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
-                                    {analysis.missingKeywords.map((keyword, idx) => (
+                                    {analysis.missingKeywords.map((kw, i) => (
                                         <span
-                                            key={idx}
+                                            key={i}
                                             className="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full text-sm font-medium"
                                         >
-                                            {keyword}
+                                            {kw}
                                         </span>
                                     ))}
                                 </div>
@@ -295,14 +272,11 @@ export default function CareerAssistantPage() {
                         </div>
                     </Card>
 
-                    {/* Quick Tips */}
                     <Card>
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
-                            💡 Quick Tips
-                        </h3>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">💡 Quick Tips</h3>
                         <ul className="space-y-2">
-                            {analysis.suggestions.map((tip, idx) => (
-                                <li key={idx} className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            {analysis.suggestions.map((tip, i) => (
+                                <li key={i} className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                                     <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                                     <span className="text-slate-700 dark:text-slate-300">{tip}</span>
                                 </li>
@@ -310,15 +284,11 @@ export default function CareerAssistantPage() {
                         </ul>
                     </Card>
 
-                    {/* Action Buttons */}
                     <div className="flex flex-wrap gap-4">
-                        <Button
-                            variant="primary"
-                            icon={FileCheck}
-                            onClick={() => setShowBuilder(true)}
-                        >
+                        <Button variant="primary" icon={FileCheck} onClick={() => setShowBuilder(true)}>
                             Build Better Resume
                         </Button>
+
                         <Button
                             variant="outline"
                             icon={Upload}
@@ -330,6 +300,7 @@ export default function CareerAssistantPage() {
                         >
                             Analyze Another Resume
                         </Button>
+
                         <Button variant="outline" icon={Download}>
                             Download Report (PDF)
                         </Button>
@@ -340,7 +311,6 @@ export default function CareerAssistantPage() {
     );
 }
 
-// Resume Builder Component
 function ResumeBuilder({ onClose }: { onClose: () => void }) {
     return (
         <div className="space-y-6">
@@ -362,9 +332,11 @@ function ResumeBuilder({ onClose }: { onClose: () => void }) {
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
                         Resume Builder Coming Soon!
                     </h2>
+
                     <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md mx-auto">
                         We're working on an amazing resume builder with:
                     </p>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
                         {[
                             '10+ Professional Templates',
