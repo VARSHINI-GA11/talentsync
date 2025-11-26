@@ -1,4 +1,4 @@
-import { JobPosting, Application, CandidateProfile, TestQuestion } from './types';
+import { JobPosting, Application, CandidateProfile, TestQuestion } from '../types';
 
 // Mock Job Postings
 export const mockJobs: JobPosting[] = [
