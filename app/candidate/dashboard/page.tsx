@@ -139,7 +139,8 @@ export default function CandidateDashboard() {
                                     const matchScore = calculateMatchScore(job.required_skills, candidateSkills);
 
                                     return (
-                                        <Card key={job.id}>
+                                       <Card key={job.id}>
+
 
                                             <div className="flex items-start justify-between mb-3">
                                                 <div>
